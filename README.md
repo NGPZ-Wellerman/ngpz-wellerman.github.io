@@ -1,1 +1,0 @@
-# ngpz-wellerman.github.io
