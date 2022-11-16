@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Check for blocks</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 2em;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      #ng.loading::before,
+      #iio.loading::before {
+        width: 100%;
+        height: 100%;
+        border: 3px solid #0002;
+        border-radius: 50%;
+        border-top-color: #000a;
+        content: "";
+        display: block;
+        animation-name: spin;
+        animation-duration: 1s;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
+        flex-shrink: 0;
+      }
+      #ng,
+      #iio {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        background: #eee;
+        border: 3px solid transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-size: 200% 200%;
+        background-position: center;
+        background-repeat: no-repeat;
+        --1green: #30e630;
+        --2red: #f52e2e;
+        --3gray: transparent;
+      }
+      iframe {
+        width: 0;
+        height: 0;
+        border: none;
+      }
+    </style>
+    <script>
+      const ngDomains = {
+        "uploads.ungrounded.net": null,
+        "www.newgrounds.com": null,
+        "css.ngfiles.com": null,
+        "js.ngfiles.com": null,
+      };
+      const iioDomains = {
+        "ngpz.itch.io": null,
+        "static.itch.io": null,
+        "img.itch.zone": null,
+        "v6p9d9t4.ssl.hwcdn.net": null,
+      };
+      window.addEventListener("message", ({ data }) => {
+        const [ok, domain] = data;
+        if (domain in ngDomains) {
+          ngDomains[domain] = Boolean(ok);
+          makeChart(ngDomains, ng);
+        }
+        if (domain in iioDomains) {
+          iioDomains[domain] = Boolean(ok);
+          makeChart(iioDomains, iio);
+        }
+      });
+      function makeChart(o, ele) {
+        let [first, second, third, fourth] = Object.values(o)
+          .map(
+            (e) =>
+              ({
+                null: "var(--3gray)",
+                true: "var(--1green)",
+                false: "var(--2red)",
+              }[String(e)])
+          )
+          .sort();
+        ele.style.backgroundImage = `conic-gradient(${first} 25%, ${second} 25%, ${second} 50%, ${third} 50%, ${third} 75%, ${fourth} 75%)`;
+        if (
+          first != "var(--3gray)" &&
+          second != "var(--3gray)" &&
+          third != "var(--3gray)" &&
+          fourth != "var(--3gray)"
+        ) {
+          ele.className = "";
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Connections</h1>
+    <h2>Newgrounds:</h2>
+    <div id="ng" class="loading"></div>
+    <h2>Itch.io:</h2>
+    <div id="iio" class="loading"></div>
+    <iframe src="data:text/html;base64,PHNjcmlwdD4KICBjb25zdCBsb2c9Y29uc29sZS5sb2cuYmluZChjb25zb2xlKQogIGZ1bmN0aW9uIHJlcG9ydChkb21haW4sIG9rKSB7CiAgICBsb2coZG9tYWluLCBvaykKICAgIHdpbmRvdy5wYXJlbnQucG9zdE1lc3NhZ2UoW29rLCBkb21haW5dLCAiKiIpCiAgfQogIGZvcihsZXQgZm4gaW4gY29uc29sZSkgewogICAgaWYodHlwZW9mIGNvbnNvbGVbZm5dID09ICJmdW5jdGlvbiIpIGNvbnNvbGVbZm5dID0gKCk9Pnt9IC8vZGlzYWJsZSBjb25zb2xlIG91dHB1dAogIH0KPC9zY3JpcHQ+CjxiPk5ld2dyb3VuZHM6PC9iPgo8ZGl2IGlkPSJuZ2xvZ3MiPjwvZGl2Pgo8bGluayByZWw9InN0eWxlc2hlZXQiIGhyZWY9Imh0dHBzOi8vY3NzLm5nZmlsZXMuY29tL25nXzIwMTUuNjM2ZDI2OTRiMGNkMC5jc3MiIHR5cGU9InRleHQvY3NzIiBtZWRpYT0iYWxsIiBvbmxvYWQ9InJlcG9ydCgnY3NzLm5nZmlsZXMuY29tJyx0cnVlKSIgb25lcnJvcj0icmVwb3J0KCdjc3MubmdmaWxlcy5jb20nLGZhbHNlKSIgLz4KPHNjcmlwdCBzcmM9Imh0dHBzOi8vanMubmdmaWxlcy5jb20vanF1ZXJ5L2pxdWVyeS0zLjYuMC5taW4uanMiIGFzeW5jIG9ubG9hZD0icmVwb3J0KCdqcy5uZ2ZpbGVzLmNvbScsdHJ1ZSkiIG9uZXJyb3I9InJlcG9ydCgnanMubmdmaWxlcy5jb20nLGZhbHNlKSI+PC9zY3JpcHQ+CjxpbWcgd2lkdGg9IjAiIGhlaWdodD0iMCIgc3JjPSJodHRwczovL3VwbG9hZHMudW5ncm91bmRlZC5uZXQvdG1wL2ltZy81MzEwMDAvaXVfNTMxNTgyXzk5MTkyMjUucG5nIiBvbmxvYWQ9InJlcG9ydCgndXBsb2Fkcy51bmdyb3VuZGVkLm5ldCcsdHJ1ZSkiIG9uZXJyb3I9InJlcG9ydCgndXBsb2Fkcy51bmdyb3VuZGVkLm5ldCcsZmFsc2UpIj4KPGltZyB3aWR0aD0iMCIgaGVpZ2h0PSIwIiBzcmM9Imh0dHBzOi8vd3d3Lm5ld2dyb3VuZHMuY29tL2ltZy9pY29ucy9mYXZpY29uLnBuZyIgb25sb2FkPSJyZXBvcnQoJ3d3dy5uZXdncm91bmRzLmNvbScsdHJ1ZSkiIG9uZXJyb3I9InJlcG9ydCgnd3d3Lm5ld2dyb3VuZHMuY29tJyxmYWxzZSkiPgoKCjxicj48Yj5pdGNoLmlvPC9iPgo8ZGl2IGlkPSJpaW9sb2dzIj48L2Rpdj4KPGltZyB3aWR0aD0iMCIgaGVpZ2h0PSIwIiBzcmM9Imh0dHBzOi8vbmdwei5pdGNoLmlvL2Zhdmljb24uaWNvIiBvbmxvYWQ9InJlcG9ydCgnbmdwei5pdGNoLmlvJyx0cnVlKSIgb25lcnJvcj0icmVwb3J0KCduZ3B6Lml0Y2guaW8nLGZhbHNlKSI+CjxpbWcgd2lkdGg9IjAiIGhlaWdodD0iMCIgc3JjPSJodHRwczovL3N0YXRpYy5pdGNoLmlvL2Zhdmljb24uaWNvIiBvbmxvYWQ9InJlcG9ydCgnc3RhdGljLml0Y2guaW8nLHRydWUpIiBvbmVycm9yPSJyZXBvcnQoJ3N0YXRpYy5pdGNoLmlvJyxmYWxzZSkiPgo8aW1nIHdpZHRoPSIwIiBoZWlnaHQ9IjAiIHNyYz0iaHR0cHM6Ly9pbWcuaXRjaC56b25lL2Zhdmljb24uaWNvIiBvbmxvYWQ9InJlcG9ydCgnaW1nLml0Y2guem9uZScsdHJ1ZSkiIG9uZXJyb3I9InJlcG9ydCgnaW1nLml0Y2guem9uZScsZmFsc2UpIj4KPGltZyB3aWR0aD0iMCIgaGVpZ2h0PSIwIiBzcmM9Imh0dHBzOi8vdjZwOWQ5dDQuc3NsLmh3Y2RuLm5ldC9odG1sLzUzNjI0MDEvY292ZXIuanBnIiBvbmxvYWQ9InJlcG9ydCgndjZwOWQ5dDQuc3NsLmh3Y2RuLm5ldCcsdHJ1ZSkiIG9uZXJyb3I9InJlcG9ydCgndjZwOWQ5dDQuc3NsLmh3Y2RuLm5ldCcsZmFsc2UpIj4K" sandbox="allow-scripts" id="frame"></iframe>
+  </body>
+</html>
